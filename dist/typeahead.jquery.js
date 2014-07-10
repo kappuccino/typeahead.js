@@ -548,6 +548,7 @@
             this.highlight = !!o.highlight;
             this.name = o.name || _.getUniqueId();
             this.source = o.source;
+            this.filter = o.filter;
             this.displayFn = getDisplayFn(o.display || o.displayKey);
             this.templates = getTemplates(o.templates, this.displayFn);
             this.$el = $(html.dataset.replace("%CLASS%", this.name));
@@ -620,7 +621,7 @@
                 var that = this;
                 this.query = query;
                 this.canceled = false;
-                this.source(query, render);
+                this.source(query, render, this.filter);
                 function render(suggestions) {
                     if (!that.canceled && query === that.query) {
                         that._render(query, suggestions);

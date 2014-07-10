@@ -29,6 +29,7 @@ var Dataset = (function() {
     this.name = o.name || _.getUniqueId();
 
     this.source = o.source;
+	  this.filter = o.filter;
     this.displayFn = getDisplayFn(o.display || o.displayKey);
 
     this.templates = getTemplates(o.templates, this.displayFn);
@@ -141,7 +142,7 @@ var Dataset = (function() {
 
       this.query = query;
       this.canceled = false;
-      this.source(query, render);
+      this.source(query, render, this.filter);
 
       function render(suggestions) {
         // if the update has been canceled or if the query has changed

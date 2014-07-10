@@ -631,7 +631,7 @@
             add: function add(data) {
                 this.index.add(data);
             },
-            get: function get(query, cb) {
+            get: function get(query, cb, filter) {
                 var that = this, matches = [], cacheHit = false;
                 matches = this.index.get(query);
                 matches = this.sorter(matches).slice(0, this.limit);
@@ -643,6 +643,7 @@
                 }
                 function returnRemoteMatches(remoteMatches) {
                     var matchesWithBackfill = matches.slice(0);
+                    if (filter) remoteMatches = filter.call(this, remoteMatches);
                     _.each(remoteMatches, function(remoteMatch) {
                         var isDuplicate;
                         isDuplicate = _.some(matchesWithBackfill, function(match) {
@@ -1109,6 +1110,7 @@
             this.highlight = !!o.highlight;
             this.name = o.name || _.getUniqueId();
             this.source = o.source;
+            this.filter = o.filter;
             this.displayFn = getDisplayFn(o.display || o.displayKey);
             this.templates = getTemplates(o.templates, this.displayFn);
             this.$el = $(html.dataset.replace("%CLASS%", this.name));
@@ -1181,7 +1183,7 @@
                 var that = this;
                 this.query = query;
                 this.canceled = false;
-                this.source(query, render);
+                this.source(query, render, this.filter);
                 function render(suggestions) {
                     if (!that.canceled && query === that.query) {
                         that._render(query, suggestions);
